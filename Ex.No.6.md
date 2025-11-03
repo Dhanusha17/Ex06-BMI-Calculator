@@ -1,7 +1,6 @@
 # Ex06 BMI Calculator
-## Date:03.11.2025
-## NAME: DHANUSHA K
-## REG NO: 212223040034
+## Date:
+
 ## AIM
 To create a BMI calculator using React Router 
 
@@ -22,253 +21,150 @@ Classify the BMI result into categories (Underweight, Normal weight, Overweight,
 Navigate between pages using React Router.
 
 ## PROGRAM
-Home.jsx
+### App.js:
 ```
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import "./App.css";
 
-function Home() {
-  const navigate = useNavigate();
-  return (
-    <div className="home-container">
-      <h2 className="home-title">Welcome to the BMI Calculator!</h2>
-      <p className="home-description">Click the button below to calculate your Body Mass Index.</p>
-      <button className="start-btn" onClick={() => navigate('/calculator')}>Start</button>
-    </div>
-  );
-}
+export default function BMICalculator() {
+  const [weight, setWeight] = useState("");
+  const [height, setHeight] = useState("");
+  const [bmi, setBmi] = useState(null);
+  const [category, setCategory] = useState("");
 
-export default Home;
-```
-BMICalculator.jsx
-```
-import React, { useState } from 'react';
+  const calculateBMI = () => {
+    const weightNum = parseFloat(weight);
+    const heightNum = parseFloat(height) / 100;
 
-function BMICalculator() {
-  const [weight, setWeight] = useState('');
-  const [height, setHeight] = useState('');
-  const [bmi, setBmi] = useState('');
-  const [category, setCategory] = useState('');
+    if (!weightNum || !heightNum || heightNum <= 0) {
+      setBmi(null);
+      setCategory("Invalid input");
+      return;
+    }
 
-  const calculate = () => {
-    const h = height / 100;
-    const b = weight / (h * h);
-    setBmi(b.toFixed(2));
-    if (b < 18.5) setCategory('Underweight');
-    else if (b < 25) setCategory('Normal');
-    else if (b < 30) setCategory('Overweight');
-    else setCategory('Obese');
+    const bmiValue = weightNum / (heightNum * heightNum);
+    setBmi(bmiValue.toFixed(2));
+
+    if (bmiValue < 18.5) {
+      setCategory("Underweight");
+    } else if (bmiValue < 24.9) {
+      setCategory("Normal weight");
+    } else if (bmiValue < 29.9) {
+      setCategory("Overweight");
+    } else {
+      setCategory("Obesity");
+    }
   };
 
   return (
-    <div className="calculator-container">
-      <h2 className="calculator-title">Calculate Your BMI</h2>
-      <div className="input-container">
-        <input 
-          type="number" 
-          placeholder="Weight (kg)" 
-          value={weight} 
-          onChange={(e) => setWeight(e.target.value)} 
-          className="input"
-        />
-        <input 
-          type="number" 
-          placeholder="Height (cm)" 
-          value={height} 
-          onChange={(e) => setHeight(e.target.value)} 
-          className="input"
+    <div className="container">
+      <h1 className="title">BMI Calculator</h1>
+      <div className="input-group">
+        <label>Weight (kg):</label>
+        <input
+          type="number"
+          value={weight}
+          onChange={(e) => setWeight(e.target.value)}
+          placeholder="Enter your weight"
         />
       </div>
-      <button className="calculate-btn" onClick={calculate}>Calculate</button>
+      <div className="input-group">
+        <label>Height (cm):</label>
+        <input
+          type="number"
+          value={height}
+          onChange={(e) => setHeight(e.target.value)}
+          placeholder="Enter your height"
+        />
+      </div>
+      <button onClick={calculateBMI} className="button">
+        Calculate BMI
+      </button>
       {bmi && (
         <div className="result">
-          <h3>Your BMI: {bmi}</h3>
-          <p>Category: <strong>{category}</strong></p>
+          <p><strong>BMI:</strong> {bmi}</p>
+          <p><strong>Category:</strong> {category}</p>
         </div>
+      )}
+      {category === "Invalid input" && (
+        <p className="error">Please enter valid weight and height.</p>
       )}
     </div>
   );
 }
 
-export default BMICalculator;
-
 ```
-k.css
+### App.css:
 ```
-/* Basic Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* App.css */
 
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f0f8ff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+  background-color: #f9fafb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  margin: 0;
+  padding: 0;
 }
 
-/* App */
-.app {
-  text-align: center;
-  background-color: #fff;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+.container {
+  max-width: 28rem; /* Equivalent to Tailwind's max-w-md */
+  margin: 2.5rem auto; /* mt-10 */
+  padding: 1.5rem; /* p-6 */
+  background-color: #ffffff;
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* shadow-md */
+}
+
+.title {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 0.25rem; /* mb-1 */
+}
+
+.input-group input {
   width: 100%;
+  padding: 0.5rem; /* p-2 */
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
 }
 
-.app-title {
-  font-size: 2.5rem;
-  color: #2196f3;
-  margin-bottom: 20px;
-}
-
-.nav {
-  margin-bottom: 30px;
-}
-
-.nav-link {
-  font-size: 1rem;
-  color: #4caf50;
-  margin: 0 10px;
-  text-decoration: none;
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover {
-  color: #2196f3;
-}
-
-/* Calculator */
-.calculator-container {
-  margin-top: 20px;
-}
-
-.calculator-title {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 15px;
-}
-
-.input-container {
-  margin-bottom: 20px;
-}
-
-.input {
-  width: 80%;
-  padding: 10px;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin: 5px;
-  transition: border 0.3s;
-}
-
-.input:focus {
-  border: 1px solid #2196f3;
-}
-
-.calculate-btn {
-  padding: 10px 20px;
-  background-color: #4caf50;
+.button {
+  width: 100%;
+  background-color: #3b82f6; /* blue-500 */
   color: white;
+  padding: 0.5rem 1rem; /* py-2 px-4 */
   border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.3s ease;
 }
 
-.calculate-btn:hover {
-  background-color: #45a049;
+.button:hover {
+  background-color: #2563eb; /* blue-600 */
 }
 
 .result {
-  margin-top: 20px;
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #f3f4f6; /* gray-100 */
+  border-radius: 0.5rem;
 }
 
-.result h3 {
-  font-size: 1.5rem;
-  color: #333;
+.error {
+  margin-top: 1rem;
+  color: #ef4444; /* red-500 */
 }
 
-.result p {
-  font-size: 1.2rem;
-  color: #666;
-}
-
-/* Home */
-.home-container {
-  text-align: center;
-}
-
-.home-title {
-  font-size: 2.5rem;
-  color: #2196f3;
-  margin-bottom: 15px;
-}
-
-.home-description {
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-}
-
-.start-btn {
-  padding: 12px 25px;
-  background-color: #2196f3;
-  color: white;
-  font-size: 1rem;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.start-btn:hover {
-  background-color: #1976d2;
-}
 ```
-
-App.jsx
-```
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import Home from './Home';
-import BMICalculator from './BMICalculator';
-import k from './k.css';
-
-function App() {
-  return (
-    <Router>
-      <div className="app">
-        <h1 className="app-title">BMI Calculator</h1>
-        <nav className="nav">
-          <Link className="nav-link" to="/">Home</Link>
-          <Link className="nav-link" to="/calculator">Calculator</Link>
-        </nav>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/calculator" element={<BMICalculator />} />
-        </Routes>
-      </div>
-    </Router>
-  );
-}
-
-export default App;
-```
-
 ## OUTPUT
-![image](https://github.com/user-attachments/assets/c57bea7b-0333-4c93-a34a-d8e48e6ee9e2)
-![image](https://github.com/user-attachments/assets/e2d045f1-5c15-4a7c-ad0e-609ecd30f466)
-![image](https://github.com/user-attachments/assets/229ef2c8-c5de-4b5e-9db6-2e1153aceec4)
-
-
-
+![alt text](<myapo/src/img/Screenshot 2025-05-17 200456.png>)
 ## RESULT
 The program for creating BMI Calculator using React Router is executed successfully.
