@@ -1,5 +1,5 @@
 # Ex06 BMI Calculator
-## Date:
+## Date:19.05.25
 
 ## AIM
 To create a BMI calculator using React Router 
@@ -21,112 +21,104 @@ Classify the BMI result into categories (Underweight, Normal weight, Overweight,
 Navigate between pages using React Router.
 
 ## PROGRAM
-### App.jsx
-```
-import { useState } from 'react';
-import './App.css';
+## app.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './Home';
+import BMICalculator from './BMIcalculator';
 
 function App() {
+  return (
+    <Router>
+      <div className="App">
+        <nav>
+          <Link to="/">Home</Link> | <Link to="/calculator">BMI Calculator</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/calculator" element={<BMICalculator />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+## BMIcalculator
+import React, { useState } from 'react';
+
+function BMICalculator() {
   const [weight, setWeight] = useState('');
   const [height, setHeight] = useState('');
   const [bmi, setBmi] = useState(null);
-  const [message, setMessage] = useState('');
+  const [category, setCategory] = useState('');
 
-  const calculateBMI = (e) => {
-    e.preventDefault();
+  const calculateBMI = () => {
+    if (weight > 0 && height > 0) {
+      const heightInMeters = height / 100;
+      const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
+      setBmi(bmiValue);
 
-    if (!weight || !height) {
-      alert('Please enter both weight and height');
-      return;
+      let resultCategory = '';
+      if (bmiValue < 18.5) resultCategory = 'Underweight';
+      else if (bmiValue < 24.9) resultCategory = 'Normal weight';
+      else if (bmiValue < 29.9) resultCategory = 'Overweight';
+      else resultCategory = 'Obesity';
+
+      setCategory(resultCategory);
+    } else {
+      alert('Please enter valid weight and height.');
     }
-
-    const heightInMeters = height / 100;
-    const bmiValue = (weight / (heightInMeters * heightInMeters)).toFixed(2);
-    setBmi(bmiValue);
-
-    let msg = '';
-    if (bmiValue < 18.5) msg = 'Underweight';
-    else if (bmiValue >= 18.5 && bmiValue < 24.9) msg = 'Normal weight';
-    else if (bmiValue >= 25 && bmiValue < 29.9) msg = 'Overweight';
-    else msg = 'Obese';
-
-    setMessage(msg);
   };
 
   return (
-    <div className="container">
-      <h1>BMI Calculator</h1>
-      <form onSubmit={calculateBMI}>
-        <div>
-          <label>Weight (kg):</label>
-          <input
-            type="number"
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-          />
-        </div>
-        <div>
-          <label>Height (cm):</label>
-          <input
-            type="number"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-          />
-        </div>
-        <button type="submit">Calculate</button>
-      </form>
-
+     <div>
+      <h2>BMI Calculator</h2>
+      <input
+        type="number"
+        placeholder="Weight in kg"
+        value={weight}
+        onChange={(e) => setWeight(e.target.value)}
+      />
+      <br />
+      <input
+        type="number"
+        placeholder="Height in cm"
+        value={height}
+        onChange={(e) => setHeight(e.target.value)}
+      />
+      <br />
+      <button onClick={calculateBMI}>Calculate BMI</button>
       {bmi && (
-        <div className="result">
-          <h2>Your BMI: {bmi}</h2>
-          <p>Status: {message}</p>
+        <div>
+          <p>Your BMI: {bmi}</p>
+          <p>Category: {category}</p>
         </div>
       )}
     </div>
   );
 }
 
+export default BMICalculator;
+
+
 export default App;
 
-```
-### App.css
-```
-.container {
-  max-width: 400px;
-  margin: 2rem auto;
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-family: sans-serif;
-  text-align: center;
+## home.jsx
+import React from 'react';
+
+function Home() {
+  return (
+    <div>
+      <h1>Welcome to BMI Calculator</h1>
+      <p>Click on the navigation to calculate your BMI.</p>
+    </div>
+  );
 }
 
-form > div {
-  margin-bottom: 1rem;
-}
+export default Home;
 
-input {
-  padding: 0.5rem;
-  width: 100%;
-  margin-top: 0.3rem;
-}
-
-button {
-  padding: 0.5rem 1rem;
-  background-color: #007bff;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.result {
-  margin-top: 1rem;
-}
-
-```
 ## OUTPUT
-![alt text](<my/src/img/Screenshot 2025-05-17 at 8.57.42 AM.png>)
-![alt text](<my/src/img/Screenshot 2025-05-17 at 8.58.01 AM.png>)
+![alt text](<Screenshot 2025-05-19 113001.png>)
+
 ## RESULT
 The program for creating BMI Calculator using React Router is executed successfully.
